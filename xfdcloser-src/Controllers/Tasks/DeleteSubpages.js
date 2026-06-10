@@ -21,10 +21,10 @@ export default class DeleteSubpages extends TaskItemController {
 		};
 
 		for(let i = 0; i < resultList.length; i++){
-			result.titles.push(resultList[i].pages.map(page => page.title))
+			result.titles.push(resultList[i].pages.map(page => page.title));
 			result.talkTitles.push(resultList[i].pages
 				.filter(page => page.talkid)
-				.map(page => mw.Title.newFromText(page.title).getTalkPage().getPrefixedText()))
+				.map(page => mw.Title.newFromText(page.title).getTalkPage().getPrefixedText()));
 		}
 
 		this.model.setTotalSteps(result.titles.length + result.talkTitles.length);
@@ -71,7 +71,7 @@ export default class DeleteSubpages extends TaskItemController {
 	doTask() {
 		return Promise.all(this.model.getResolvedPageNames().map(page => this.api.queryWithContinue({
 			gapprefix: mw.Title.newFromText(page).getMainText()+"/",
-            gapnamespace: mw.Title.newFromText(page).getNamespaceId(),
+			gapnamespace: mw.Title.newFromText(page).getNamespaceId(),
 			generator: "allpages",
 			gaplimit: "max",
 			prop: "info",
