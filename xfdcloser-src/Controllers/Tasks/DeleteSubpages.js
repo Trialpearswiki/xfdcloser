@@ -14,13 +14,18 @@ export default class DeleteSubpages extends TaskItemController {
 	 * @param {Object[]} pages page objects from Api
 	 * @returns {Object<string,string[]>|Promise<Object<string,string[]>>} Object (or promise of object) of page name arrays for keys "titles" and "talkTitles" 
 	 */
-	titlesFromResponsePages(pages) {
-		const result = {
-			titles: pages.map(page => page.title),
-			talkTitles: pages
-				.filter(page => page.talkid)
-				.map(page => mw.Title.newFromText(page.title).getTalkPage().getPrefixedText())
+	titlesFromResponsePages(resultList) {
+		let result = {
+			titles: [],
+			talkTitles: []
 		};
+
+		for(let i = 0; i < resultList.length; i++){
+			result.titles.push(resultList[i].pages.map(page => page.title))
+			result.talkTitles.push(resultList[i].pages
+				.filter(page => page.talkid)
+				.map(page => mw.Title.newFromText(page.title).getTalkPage().getPrefixedText()))
+		}
 
 		this.model.setTotalSteps(result.titles.length + result.talkTitles.length);
 
@@ -64,22 +69,26 @@ export default class DeleteSubpages extends TaskItemController {
 	}
 
 	doTask() {
-		return this.api.queryWithContinue({
-			gapprefix: this.model.getResolvedPageNames().map(s => mw.Title.newFromText(s).getMainText()+"/"),
-            gapnamespace: this.model.getResolvedPageNames().map(s => mw.Title.newFromText(s).getNamespaceId()),
+		return Promise.all(this.model.getResolvedPageNames().map(page => this.api.queryWithContinue({
+			gapprefix: mw.Title.newFromText(page).getMainText()+"/",
+            gapnamespace: mw.Title.newFromText(page).getNamespaceId(),
 			generator: "allpages",
 			gaplimit: "max",
 			prop: "info",
 			inprop: "talkid"
-		}).then(response => {
+		}))).then(responses => {
 			if ( this.model.aborted ) {
 				return rejection("aborted");
-			} else if ( !response || !response.pages ) {
+			} else if ( !responses ) {
 				this.model.addWarning("none found");
 				return rejection("Skipped.");
 			}
-			return this.titlesFromResponsePages(response.pages);
+			return this.titlesFromResponsePages(responses);
 		}).then(result => {
+			if ( !result.titles ) {
+				this.model.addWarning("none found");
+				return rejection("Skipped.");
+			}
 			if ( this.model.aborted ) {
 				return rejection("aborted");
 			}
