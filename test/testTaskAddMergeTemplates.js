@@ -7,7 +7,6 @@ import Discussion from "../xfdcloser-src/Models/Discussion";
 import Venue from "../xfdcloser-src/Venue";
 import Result from "../xfdcloser-src/Models/Result";
 import Options from "../xfdcloser-src/Models/Options";
-import config from "../xfdcloser-src/config";
 import { dmyDateString } from "../xfdcloser-src/util";
 
 // Mock widgets
