@@ -79,7 +79,7 @@ describe("AddBeingDeleted", function() {
 			transformed,
 			{
 				text: "<noinclude>{{Being deleted|2020 March 18|Foo and bar}}</noinclude>blah blah blah",
-				summary: "Added {{being deleted}} per [[WP:TFD/discussionPageName#Foo and bar]] " + config.script.advert
+				summary: "Added {{being deleted}} per [[WP:TFD/discussionPageName#Foo and bar]]"
 			}
 		);
 	});
@@ -101,7 +101,7 @@ describe("AddBeingDeleted", function() {
 			transformed,
 			{
 				text: "<noinclude>{{Db-xfd|fullvotepage=WP:TFD/discussionPageName#Foo and bar}}</noinclude>blah blah blah",
-				summary: "[[WP:G6|G6]] Speedy deletion nomination, per [[WP:TFD/discussionPageName#Foo and bar]] " + config.script.advert
+				summary: "[[WP:G6|G6]] Speedy deletion nomination, per [[WP:TFD/discussionPageName#Foo and bar]]"
 			}
 		);
 	});
@@ -127,7 +127,7 @@ describe("AddBeingDeleted", function() {
 			transformed,
 			{
 				text: "blah blah blah",
-				summary: "[[WP:TFD/discussionPageName#Foo and bar]] closed as merge " + config.script.advert
+				summary: "[[WP:TFD/discussionPageName#Foo and bar]] closed as merge"
 			}
 		);
 	});
@@ -153,7 +153,7 @@ describe("AddBeingDeleted", function() {
 			transformed,
 			{
 				text: "<noinclude>{{Being deleted|2020 March 18|Foo and bar|merge=Template:Foo}}</noinclude>blah blah blah",
-				summary: "Added {{being deleted}} per [[WP:TFD/discussionPageName#Foo and bar]] " + config.script.advert
+				summary: "Added {{being deleted}} per [[WP:TFD/discussionPageName#Foo and bar]]"
 			}
 		);
 	});
@@ -197,7 +197,7 @@ describe("AddBeingDeleted", function() {
 			transformed,
 			{
 				text: "<includeonly>{{Being deleted|2020 March 18|Foo and bar}}</includeonly>Lorem ipsum dorem sum",
-				summary: "Added {{being deleted}} per [[WP:TFD/discussionPageName#Foo and bar]] " + config.script.advert
+				summary: "Added {{being deleted}} per [[WP:TFD/discussionPageName#Foo and bar]]"
 			}
 		);
 	});
