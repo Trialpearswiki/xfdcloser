@@ -21,11 +21,14 @@ export default class DeleteSubpages extends TaskItemController {
 		};
 
 		for(let i = 0; i < resultList.length; i++){
-			result.titles.push(resultList[i].pages.map(page => page.title));
-			result.talkTitles.push(resultList[i].pages
-				.filter(page => page.talkid)
-				.map(page => mw.Title.newFromText(page.title).getTalkPage().getPrefixedText()));
+			if(resultList[i] != undefined){
+				result.titles.push(resultList[i].pages.map(page => page.title));
+				result.talkTitles.push(resultList[i].pages
+					.filter(page => page.talkid)
+					.map(page => mw.Title.newFromText(page.title).getTalkPage().getPrefixedText()));
+			}
 		}
+		result.talkTitles = result.talkTitles.flat();
 
 		this.model.setTotalSteps(result.titles.length + result.talkTitles.length);
 
@@ -85,7 +88,7 @@ export default class DeleteSubpages extends TaskItemController {
 			}
 			return this.titlesFromResponsePages(responses);
 		}).then(result => {
-			if ( !result.titles ) {
+			if ( result.titles.length == 0 ) {
 				this.model.addWarning("none found");
 				return rejection("Skipped.");
 			}
