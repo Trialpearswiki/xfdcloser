@@ -15,7 +15,7 @@ export default class UserspaceLogging extends TaskItemController {
 		const date = new Date();
 		if (newText == undefined) {
 			newText = "This is a log of all XfD closes made by this user using [[WP:XFDcloser|XFDcloser]].\n\n" +
-                "If you no longer wish to keep this log, you can turn it off using the preferences panel and " +
+				"If you no longer wish to keep this log, you can turn it off using the preferences panel and " +
 				"nominate this page for speedy deletion under [[WP:CSD#U1|CSD U1]]."; 
 		}
 		const monthHeader = "=== " + Month.nameFromIndex(date.getUTCMonth()) +" "+  date.getUTCFullYear() + " ===";
@@ -30,7 +30,6 @@ export default class UserspaceLogging extends TaskItemController {
 			logItem = "Closed [[" + this.model.discussion.discussionPageName + "#" + this.model.discussion.sectionHeader + "]] as " + this.model.result.getResultText(); 
 		}
 		newText += "\n#"+logItem+" ~~~~~";
-		console.log(logItem);
 		return {
 			text: newText,
 			summary: logItem
@@ -41,7 +40,6 @@ export default class UserspaceLogging extends TaskItemController {
 		this.model.setTotalSteps(1);
 		this.model.setDoing();
 		const logPage = "User:"+mw.user.getName()+"/XFDcloser log";
-		console.log(logPage);
 
 		return this.api.editWithRetry(
 			logPage,
