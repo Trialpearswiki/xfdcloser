@@ -200,13 +200,13 @@ DiscussionView.newFromHeadline = function({headingIndex, context, venue, current
 			.get();
 		if (pages.length === 0) {
 			pages = $discussionNodes
-			.find("dd > ul > li")
-			.has("b:first-child")
-			.children("span:nth-child(2)") // If using {{Lc}} there's an extra span
-			.children("a:first-of-type")
-			.not(".external")
-			.map(function () { return mw.Title.newFromText($(this).text()); })
-			.get();
+				.find("dd > ul > li")
+				.has("b:first-child")
+				.children("span:nth-child(2)") // If using {{Lc}} there's an extra span
+				.children("a:first-of-type")
+				.not(".external")
+				.map(function () { return mw.Title.newFromText($(this).text()); })
+				.get();
 		} 
 		// Try to find the proposed action
 		const $action = $heading
