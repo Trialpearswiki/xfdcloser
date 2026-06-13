@@ -208,7 +208,6 @@ DiscussionView.newFromHeadline = function({headingIndex, context, venue, current
 			.map(function () { return mw.Title.newFromText($(this).text()); })
 			.get();
 		} 
-		console.log(pages)
 		// Try to find the proposed action
 		const $action = $heading
 			.next()
