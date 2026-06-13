@@ -202,7 +202,7 @@ DiscussionView.newFromHeadline = function({headingIndex, context, venue, current
 			pages = $discussionNodes
 			.find("dd > ul > li")
 			.has("b:first-child")
-			.children("span") // If using {{Lc}} there's an extra span
+			.children("span:nth-child(2)") // If using {{Lc}} there's an extra span
 			.children("a:first-of-type")
 			.not(".external")
 			.map(function () { return mw.Title.newFromText($(this).text()); })
