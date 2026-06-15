@@ -31,7 +31,6 @@ export default class AddToCfdw extends TaskItemController {
 		let changesMade = 0;
 		let sectionHeader = {};
 		this.model.getPageResults().forEach(pageResult => {
-			console.log(pageResult);
 			const pageName = this.model.discussion.redirects.resolveOne(pageResult.pageName);
 			const pageTitle = mw.Title.newFromText(pageName);
 			const result = pageResult.selectedResultName;
@@ -54,7 +53,6 @@ export default class AddToCfdw extends TaskItemController {
 				sectionHeader[result] = true;
 				sectionsArray[sectionNum] = AddToCfdw.cleanupSection(sectionsArray[sectionNum]) + header;
 			}
-			console.log(options);
 			let row;
 			if (options.leaveRedirect || options.action === "cfdwRedirect") {
 				row = "* REDIRECT ";
@@ -67,6 +65,7 @@ export default class AddToCfdw extends TaskItemController {
 			}
 			// Make new section wikitext
 			sectionsArray[sectionNum] = AddToCfdw.cleanupSection(sectionsArray[sectionNum]) + "\n" + row;
+			sectionsArray[sectionNum] = sectionsArray[sectionNum].replace(/(<!--\s*End of list[^>]*-->)(.*)/si, "$2\n$1\n")
 			changesMade++;
 		});
 
@@ -97,7 +96,7 @@ export default class AddToCfdw extends TaskItemController {
 		}).then(totalEdits => {
 			let subpageName = "Working";
 			if (totalEdits >= 5000) {
-				subpageName = "Working/Large";
+				return rejection("This category belongs at WP:CFDWL since over 5000 pages will be affected. Please add it there manually");
 			}
 			return subpageName;
 		}).then(subpageName =>{
