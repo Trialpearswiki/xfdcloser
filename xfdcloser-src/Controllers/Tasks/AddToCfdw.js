@@ -65,7 +65,7 @@ export default class AddToCfdw extends TaskItemController {
 			}
 			// Make new section wikitext
 			sectionsArray[sectionNum] = AddToCfdw.cleanupSection(sectionsArray[sectionNum]) + "\n" + row;
-			sectionsArray[sectionNum] = sectionsArray[sectionNum].replace(/(<!--\s*End of list[^>]*-->)(.*)/si, "$2\n$1\n")
+			sectionsArray[sectionNum] = sectionsArray[sectionNum].replace(/(<!--\s*End of list[^>]*-->)(.*)/si, "$2\n$1\n");
 			changesMade++;
 		});
 
