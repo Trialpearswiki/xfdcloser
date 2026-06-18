@@ -98,7 +98,7 @@ export default class Template {
 	/**
 	 * Get a parameter's value by parameter name
 	 * @param {String|Number} paramName parameter name, or position number of an unnamed parameter
-	 * @returns {String|null} paraeter value, or null if parameter was not found
+	 * @returns {String|null} parameter value, or null if parameter was not found
 	 */
 	getParamValue(paramName) {
 		const param = this.getParam(paramName);

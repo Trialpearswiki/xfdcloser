@@ -290,6 +290,7 @@ Venue.Afd = transcludedOnly => new Venue("afd", {
 		closeBottom:	"{{subst:Afd bottom}}",
 		mergeFrom:		"{{Afd-merge from|__NOMINATED__|discussion=__DEBATE__|date=__DATE__}}\n",
 		mergeTo:		"{{Afd-merge to|__TARGET__|discussion=__DEBATE__|date=__DATE__}}\n",
+		beingMergedFrom:"{{Being merged from|__FROM__|afd=__DEBATE__|date=__DATE__}}",
 		alreadyClosed:	"<!--Template:Afd bottom-->"		
 	},
 	regex: {

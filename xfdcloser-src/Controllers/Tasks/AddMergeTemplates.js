@@ -2,6 +2,7 @@ import { $, mw } from "../../../globals";
 import TaskItemController from "../TaskItemController";
 import RemoveNomTemplates from "./RemoveNomTemplates";
 import { rejection, dmyDateString, uniqueArray } from "../../util";
+import Template from "../../Template";
 // <nowiki>
 
 /**
@@ -19,6 +20,7 @@ class Merger {
 	 *  @param {String} config.to Name of page to merge to
 	 *  @param {String} config.mergeToTemplate Wikitext of template to place on the "from" pages
 	 *  @param {String[]} config.mergeFromTemplates Wikitext of templates to place on the "to" page's talk page
+	 *  @param {String} config.beingMergedFromTemplate Wikitext of template to place on the "to" page 
 	 *  @param {Boolean} config.isNominatedPage merge target is one of the pages nominated in the discussion
 	 */
 	constructor(config) {
@@ -26,6 +28,7 @@ class Merger {
 		this.target = config.target;
 		this.mergeToTemplate = config.mergeToTemplate;
 		this.mergeFromTemplates = config.mergeFromTemplates;
+		this.beingMergedFromTemplate = config.beingMergedFromTemplate;
 		this.isNominatedPage = config.isNominatedPage;
 	}
 	get mergeFromWikitext() {
@@ -63,15 +66,61 @@ export default class AddMergeTemplatesTask extends TaskItemController {
 					.replace(/__DEBATE__/, this.model.discussion.discussionSubpageName)
 					.replace(/__DATE__/, curdate)
 				);
+			const beingMergedFromTemplate = this.model.venue.wikitext.beingMergedFrom
+				.replace(/__FROM__/, mergeFromPages.join("|"))
+				.replace(/__DEBATE__/, this.model.discussion.discussionSubpageName)
+				.replace(/__DATE__/, curdate);
 			const isNominatedPage = this.model.discussion.pagesNames.includes(this.model.discussion.redirects.unresolveOne(target));
 			return new Merger({
 				from: mergeFromPages,
 				target,
 				mergeToTemplate,
 				mergeFromTemplates,
+				beingMergedFromTemplate,
 				isNominatedPage
 			});
 		});
+	}
+
+	transformTargetPage(page) {
+		if ( this.model.aborted ) return rejection("aborted");
+		const merger = this.getMergers().find(
+			merger => mw.Title.newFromText(merger.target).getPrefixedText() === page.title
+		);
+		if ( !merger ) {
+			return rejection("unexpectedTitle");
+		}
+		const templates = Template.parseTemplates(page.content, true);
+		let beingMergedFromPlaced = false;
+		let wikitext = page.content;
+		const allMergeTemplates = ["merge", "mergedisputed", "mergewith", "mergedisputed", "mergevfd", "merge-disputed", "merge disputed", "merge-multiple", "mergesplit", "mergesplit", "mergemulti", "mergetomultiple-with", "multimerge", "proposed merge", "merge with","merge from", "merge-from", "include", "mergefrom-multiple", "multiplemergefrom", "mergefrommulti", "mergefrommultiple", "multimergefrom", "mergefrom-category", "mergefrom", "mergefrom", "merge from draft", "merge from afd","being merged", "merging", "mergingsectionto","being merged from", "merging from", "mergingfrom", "being merge from", "merging-from"];
+		for (let i in templates) {
+			let template = templates[templates.length - 1 - i];
+			let templateName = template.name.toLowerCase();
+			let mergeTemplatePresent = allMergeTemplates.includes(templateName);
+			let mergeTemplatePresentAndGood = ((template.getParamValue("talk") || template.getParamValue("afd") || template.getParamValue("discuss") || template.getParamValue("discussion")) === this.model.discussion.discussionSubpageName) && mergeTemplatePresent;
+			if (mergeTemplatePresentAndGood && !beingMergedFromPlaced) {
+				beingMergedFromPlaced = true;	
+				wikitext = wikitext.replace(template.wikitext, merger.beingMergedFromTemplate);
+				
+			} else if (mergeTemplatePresentAndGood || templateName == "article for deletion/dated")
+			{
+				if (!(wikitext = wikitext.replace(template.wikitext+"\n", "")))	{	
+					wikitext = wikitext.replace(template.wikitext, "");
+				}
+			}
+		}
+		if(!beingMergedFromPlaced){
+			return {
+				prependtext: merger.beingMergedFromTemplate+"\n",
+				summary: this.model.getEditSummary()
+			};
+		}
+		return {
+			summary: this.model.getEditSummary(),
+			text: wikitext,
+		};
+		
 	}
 
 	transformTargetTalk(page) {
@@ -107,8 +156,10 @@ export default class AddMergeTemplatesTask extends TaskItemController {
 		}
 		// Filter out targets which are also nominated pages
 		const mergersToNotNominatedPages = mergers.filter(merger => !merger.isNominatedPage);
-
-		this.model.setTotalSteps(this.model.pageNames.length + mergersToNotNominatedPages.length);
+		const targetPages = mergers.map(
+			merger => mw.Title.newFromText(merger.target).getPrefixedText()
+		);
+		this.model.setTotalSteps(this.model.pageNames.length + mergersToNotNominatedPages.length + targetPages.length);
 		this.model.setDoing();
 
 		// Edit the talk pages of the merge targets which are not nominated pages
@@ -144,7 +195,23 @@ export default class AddMergeTemplatesTask extends TaskItemController {
 			// Other errors already handled above
 		} );
 
-		return $.when(editTargetsTalkPages, editNominatedPages);
+		const editTargetPages = this.api.editWithRetry(
+			targetPages,
+			null,
+			page => this.transformTargetPage(page),
+			() => this.model.trackStep(),
+			(code, error, title) => this.handlePageError(code, error, title)
+		).catch( (errortype, code, error) => {
+			if ( errortype === "read" ) {
+				this.model.addError(code, error, 
+					`Could not read contents of nominated ${this.model.pageNames.length > 1 ? "pages" : "page"}`
+				);
+			}
+			// Other errors already handled above
+		} );
+
+
+		return $.when(editTargetsTalkPages, editNominatedPages, editTargetPages);
 	}
 }
 // </nowiki>
