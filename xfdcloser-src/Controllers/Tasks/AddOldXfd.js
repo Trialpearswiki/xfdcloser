@@ -21,7 +21,7 @@ export default class AddOldXfdTask extends TaskItemController {
 			.replace(/__DATE_YMD__/, ymdDateString(this.model.discussion.nominationDate))
 			.replace(/__ACTION__/, this.model.discussion.action)
 			.replace(/__SECTION__/, this.model.discussion.sectionHeader)
-			.replace(/__RESULT__/, this.model.result.getResultText())
+			.replace(/__RESULT__/, this.model.result.getResultTextWithTarget())
 			.replace(/__FIRSTDATE__/, dmyDateString(this.model.discussion.firstCommentDate))
 			.replace(/__SUBPAGE__/, this.model.discussion.discussionSubpageName);
 		if ( altpage ) {
@@ -123,8 +123,8 @@ export default class AddOldXfdTask extends TaskItemController {
 		count++;
 		const currentCount = count === 1 ? "" : count.toString();
 		const currentResult = count === 1
-			? this.model.result.getResultText()
-			: uppercaseFirst(this.model.result.getResultText());
+			? this.model.result.getResultTextWithTarget()
+			: uppercaseFirst(this.model.result.getResultTextWithTarget());
 
 		const page = this.model.venue.type === "afd"
 			? this.model.discussion.discussionSubpageName

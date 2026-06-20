@@ -225,6 +225,16 @@ class Result {
 	// Alias
 	getResultText() { return this.getFormattedResult(); }
 
+	getFormattedResultWithTarget() {
+		if ( this.isMultimode ) {
+			return this.resultSummary.trim();
+		} else {
+			return this.singleModeResult.getResultTextWithTarget();
+		}
+	}
+	// Alias
+	getResultTextWithTarget() { return this.getFormattedResultWithTarget(); }
+
 	/**
 	 * @inheritdoc ResultItem.getFormattedTarget
 	 */
