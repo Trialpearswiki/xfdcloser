@@ -141,7 +141,7 @@ class TaskItemController {
 			this.model.trackStep("skipped");
 			break;
 		case "alreadyRedirect":
-			this.model.addError(`Nominated article ${makeLink(title)} is currently a redirect. Has the merge already been done?`);
+			this.model.addError(`Nominated article ${makeLink(title)} is currently a redirect. Has the article already been merged?`);
 			this.model.trackStep("skipped");
 			break;
 		case "abort":
