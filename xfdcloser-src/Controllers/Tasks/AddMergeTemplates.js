@@ -96,11 +96,10 @@ export default class AddMergeTemplatesTask extends TaskItemController {
 		if ( !merger ) {
 			return rejection("unexpectedTitle");
 		}
-		if( !page.redirect ){
-			return RemoveNomTemplates.transform(this, page, merger.mergeToTemplate);
-		} else {
+		if ( page.redirect ){
 			return rejection("alreadyRedirect");
 		}
+		return RemoveNomTemplates.transform(this, page, merger.mergeToTemplate);
 	}
 
 	doTask() {
