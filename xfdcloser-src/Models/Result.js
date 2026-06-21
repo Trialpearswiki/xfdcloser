@@ -225,21 +225,20 @@ class Result {
 	// Alias
 	getResultText() { return this.getFormattedResult(); }
 
-	getFormattedResultWithTarget() {
-		if ( this.isMultimode ) {
-			return this.resultSummary.trim();
-		} else {
-			return this.singleModeResult.getResultTextWithTarget();
-		}
-	}
-	// Alias
-	getResultTextWithTarget() { return this.getFormattedResultWithTarget(); }
 
 	/**
 	 * @inheritdoc ResultItem.getFormattedTarget
 	 */
 	getFormattedTarget(format) {
 		return this.isMultimode ? "" : this.singleModeResult.getFormattedTarget(format);
+	}
+
+	getFormattedTargetWithPreposition() {
+		if ( this.isMultimode ) {
+			return "";
+		} else {
+			return this.singleModeResult.getFormattedTargetWithPreposition();
+		}
 	}
 
 	getResultsByPage() {

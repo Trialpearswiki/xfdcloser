@@ -132,15 +132,15 @@ class ResultItem {
 		return ( prefix || "" ) + this.selectedResultName + suffix;
 	}
 
-	getResultTextWithTarget() {
+	getFormattedTargetWithPreposition() {
 		if ( !this.selectedResult ) {
 			return "";
 		} else if ( this.selectedResult.name === "custom") {
 			return this.customResultText.trim();
 		}
-		const destination = ((this.selectedResult.name === "merge") && (" into [[" + this.targetPageName.charAt(0).toUpperCase() + this.targetPageName.slice(1) + "]]")) ||
-							((this.selectedResult.name === "redirect") && (" to [[" + this.targetPageName.charAt(0).toUpperCase() + this.targetPageName.slice(1) + "]]"));
-		return this.getResultText() + (destination || ""); 
+		const destination = ((this.selectedResult.name === "merge") && ("into [[" + this.targetPageName.charAt(0).toUpperCase() + this.targetPageName.slice(1) + "]]")) ||
+							((this.selectedResult.name === "redirect") && ("to [[" + this.targetPageName.charAt(0).toUpperCase() + this.targetPageName.slice(1) + "]]"));
+		return (destination || ""); 
 	}
 
 	/**
