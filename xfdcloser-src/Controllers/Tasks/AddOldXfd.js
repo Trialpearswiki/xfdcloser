@@ -122,7 +122,9 @@ export default class AddOldXfdTask extends TaskItemController {
 		// Otherwise, add current discussion to oldafdmulti
 		count++;
 		const currentCount = count === 1 ? "" : count.toString();
-		const currentResult = ("'''"+uppercaseFirst(this.model.result.getResultText()) + "''' " + this.model.result.getFormattedTargetWithPreposition()).trim();
+		const currentResult = count === 1
+			? ("'''"+this.model.result.getResultText() + "''' " + this.model.result.getFormattedTargetWithPreposition()).trim()
+			: ("'''"+uppercaseFirst(this.model.result.getResultText()) + "''' " + this.model.result.getFormattedTargetWithPreposition()).trim();
 
 		const page = this.model.venue.type === "afd"
 			? this.model.discussion.discussionSubpageName
