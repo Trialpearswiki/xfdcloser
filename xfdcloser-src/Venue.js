@@ -176,7 +176,7 @@ Venue.Tfd = () => {
 			alreadyClosed:	"<!-- Tfd top -->"
 		},
 		regex: {
-			nomTemplate:	/(<noinclude>[\n\s]*)?{{(?:Template for discussion|Tfm)\/dated[^{}]*(?:{{[^}}]*}}[^}}]*)*?}}([\n\s]*<\/noinclude>)?(\n)?/gi,
+			nomTemplate:	/(<noinclude>[\n\s]*)?{{(?:Template for discussion|Template for merging)\/dated[^{}]*(?:{{[^}}]*}}[^}}]*)*?}}([\n\s]*<\/noinclude>)?(\n)?/gi,
 			relistPattern:	/Wikipedia:Templates(_|\s){1}for(_|\s){1}discussion\/Log\/\d{4}(_|\s){1}\w*(_|\s){1}\d{1,2}#(?=[^}]*}{2})/gi
 		},
 		holdingCellSectionNumber: {
